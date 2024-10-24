@@ -1,0 +1,21 @@
+{
+  "name": "untitled",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node.index.js"
+  },
+  "private": true,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "googleapis": "^144.0.0",
+    "node-telegram-bot-api": "^0.66.0",
+    "nodemon": "^3.1.7"
+  }
+}
