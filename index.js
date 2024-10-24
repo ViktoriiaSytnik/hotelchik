@@ -5,7 +5,7 @@ const { google } = require('googleapis');
 
 // Constants for Telegram bot and Google Sheets
 const TOKEN = '7787559436:AAHujFfL08ckdaKCXSdpBglQht5Nov44qPY';
-const CREDENTIALS = JSON.parse(fs.readFileSync('C:\\\\Users\\\\Asus\\\\Downloads\\\\positive-epoch-439512-f5-60cad04a9e2e.json'));
+const CREDENTIALS = JSON.parse(process.env.CREDENTIALS);
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 const SPREADSHEET_ID = '1g4IBnSKuENvLONgQCxxZHETA5t8Z59vlwUKwIUNjUSY';
 
