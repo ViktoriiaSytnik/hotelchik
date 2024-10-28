@@ -4,8 +4,8 @@ const fs = require('fs');
 const { google } = require('googleapis');
 
 // Constants for Telegram bot and Google Sheets
-const TOKEN = '7787559436:AAHujFfL08ckdaKCXSdpBglQht5Nov44qPY';
-const CREDENTIALS = JSON.parse(process.env.CREDENTIALS);
+const TOKEN = '7787559436:AAHujFfL08ckdaKCXSdpBglQht5Nov44qPY'; // Replace with your actual token
+const CREDENTIALS = JSON.parse(fs.readFileSync('C:\\Users\\Asus\\Downloads\\positive-epoch-439512-f5-60cad04a9e2e.json'));
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 const SPREADSHEET_ID = '1g4IBnSKuENvLONgQCxxZHETA5t8Z59vlwUKwIUNjUSY';
 
@@ -54,14 +54,14 @@ bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text;
 
-    // Introduction phase
+    // Initialize userChoices[chatId] if undefined
     if (!userChoices[chatId]) {
         userChoices[chatId] = {};
         const name = msg.chat.first_name || 'User';
-        await bot.sendMessage(chatId, `Heeey, dear ${name}, nice to meet you. Hooootelchik is a hotel loyalty programs best choice help app. Let's start from scratch, do you know what a hotel loyalty program is?`, {
+        await bot.sendMessage(chatId, `Heeey 😃, dear ${name}, nice to meet you. My name is Hooootelchik, I'm your friendly assistant in travelling! I'll help you to find the best hotel loyalty program. But firstly let's start from scratch, do you know what a hotel loyalty program is?`, {
             reply_markup: {
                 keyboard: [
-                    [{ text: 'Yes' }, { text: 'No' }]
+                    [{ text: 'Yes👍' }, { text: 'No🤔' }]
                 ],
                 one_time_keyboard: true,
                 resize_keyboard: true,
@@ -71,8 +71,8 @@ bot.on('message', async (msg) => {
     }
 
     // Handle response to loyalty program question
-    if (!userChoices[chatId].loyaltyProgramInfo) {
-        if (text === 'Yes') {
+    if (userChoices[chatId].loyaltyProgramInfo === undefined) {
+        if (text === 'Yes👍') {
             userChoices[chatId].loyaltyProgramInfo = true;
             await bot.sendMessage(chatId, 'Great! Let\'s proceed. How many nights per year do you plan to stay in a hotel?', {
                 reply_markup: {
@@ -84,12 +84,12 @@ bot.on('message', async (msg) => {
                     resize_keyboard: true,
                 },
             });
-        } else if (text === 'No') {
+        } else if (text === 'No🤔') {
             userChoices[chatId].loyaltyProgramInfo = false;
-            await bot.sendMessage(chatId, 'A hotel loyalty program is a reward program offered by a hotel chain to attract guests to their properties. You can read more about it here: https://en.wikipedia.org/wiki/Hotel_loyalty_program. Still interested?', {
+            await bot.sendMessage(chatId, 'A hotel loyalty program gives you benefits for staying😋. Such benefits can be free room upgrade, free breakfast, etc. If you want to know more details, here is a link: https://en.wikipedia.org/wiki/Hotel_loyalty_program. Still interested?🥰', {
                 reply_markup: {
                     keyboard: [
-                        [{ text: 'Yes' }, { text: 'No' }]
+                        [{ text: 'Yes👍' }, { text: 'No🤔' }]
                     ],
                     one_time_keyboard: true,
                     resize_keyboard: true,
@@ -102,10 +102,10 @@ bot.on('message', async (msg) => {
     }
 
     // Handle response to continuing after loyalty program info
-    if (userChoices[chatId].loyaltyProgramInfo === false && !userChoices[chatId].continueAfterInfo) {
-        if (text === 'Yes') {
+    if (userChoices[chatId].loyaltyProgramInfo === false && userChoices[chatId].continueAfterInfo === undefined) {
+        if (text === 'Yes👍') {
             userChoices[chatId].continueAfterInfo = true;
-            await bot.sendMessage(chatId, 'Great! Let\'s proceed. How many nights per year do you plan to stay in a hotel?', {
+            await bot.sendMessage(chatId, 'Great! Let\'s proceed🥰. How many nights per year do you plan to stay in a hotel🚀?', {
                 reply_markup: {
                     keyboard: [
                         [{ text: '5 to 10' }, { text: '10 to 15' }],
@@ -115,8 +115,8 @@ bot.on('message', async (msg) => {
                     resize_keyboard: true,
                 },
             });
-        } else if (text === 'No') {
-            await bot.sendMessage(chatId, 'No problem! Feel free to reach out if you change your mind.');
+        } else if (text === 'No🤔') {
+            await bot.sendMessage(chatId, 'No problem🦹‍♂️! Feel free to reach out if you change your mind🌞.');
             delete userChoices[chatId];
         } else {
             await bot.sendMessage(chatId, 'Please answer with Yes or No.');
@@ -125,14 +125,14 @@ bot.on('message', async (msg) => {
     }
 
     // Handle nights per year question
-    if (!userChoices[chatId].nightsPerYear) {
+    if (userChoices[chatId].nightsPerYear === undefined) {
         if (['5 to 10', '10 to 15', '15 to 25', '25+'].includes(text)) {
             userChoices[chatId].nightsPerYear = text;
             if (['5 to 10', '10 to 15', '15 to 25'].includes(text)) {
-                await bot.sendMessage(chatId, 'If you spend only five to 10 nights in a hotel annually, don\'t obsess over hotel loyalty. Chasing elite status is worthwhile only if you\'ll confidently spend at least 25 nights each year, which can usually get you a mid-level tier of elite status. Do you still want to proceed?', {
+                await bot.sendMessage(chatId, 'If you spend only five to 25 nights in a hotel annually, it may not bring you many benefits. However, you can still enjoy some perks like late checkout or room upgrades. Chasing elite status is worthwhile only if you\'ll confidently spend at least 25 nights each year, which can usually get you a mid-level tier of elite status. Do you still want to proceed?', {
                     reply_markup: {
                         keyboard: [
-                            [{ text: 'Yes' }, { text: 'No' }]
+                            [{ text: 'Yes👍' }, { text: 'No🤔' }]
                         ],
                         one_time_keyboard: true,
                         resize_keyboard: true,
@@ -143,8 +143,8 @@ bot.on('message', async (msg) => {
                 const initialOptions = {
                     reply_markup: {
                         keyboard: [
-                            [{ text: getMessage(chatId, 'Geography', 'Географія') }],
-                            [{ text: getMessage(chatId, 'Budget', 'Бюджет') }],
+                            [{ text: getMessage(chatId, 'Geography🌎', 'Географія') }],
+                            [{ text: getMessage(chatId, 'Budget💰', 'Бюджет') }],
                         ],
                         one_time_keyboard: true,
                         resize_keyboard: true,
@@ -159,21 +159,21 @@ bot.on('message', async (msg) => {
     }
 
     // Handle response to proceeding after nights per year info
-    if (userChoices[chatId].nightsPerYear && !userChoices[chatId].proceedAfterNights) {
-        if (text === 'Yes') {
+    if (['5 to 10', '10 to 15', '15 to 25'].includes(userChoices[chatId].nightsPerYear) && userChoices[chatId].proceedAfterNights === undefined) {
+        if (text === 'Yes👍') {
             userChoices[chatId].proceedAfterNights = true;
             const initialOptions = {
                 reply_markup: {
                     keyboard: [
-                        [{ text: getMessage(chatId, 'Geography', 'Географія') }],
-                        [{ text: getMessage(chatId, 'Budget', 'Бюджет') }],
+                        [{ text: getMessage(chatId, 'Geography🌎', 'Географія') }],
+                        [{ text: getMessage(chatId, 'Budget💰', 'Бюджет') }],
                     ],
                     one_time_keyboard: true,
                     resize_keyboard: true,
                 },
             };
             await bot.sendMessage(chatId, getMessage(chatId, 'What matters more in your hotel search?', 'Що є важливішим у вашому пошуку готелю?'), initialOptions);
-        } else if (text === 'No') {
+        } else if (text === 'No🤔') {
             await bot.sendMessage(chatId, 'No problem! Feel free to reach out if you change your mind.');
             delete userChoices[chatId];
         } else {
@@ -184,7 +184,7 @@ bot.on('message', async (msg) => {
 
     // Handle Geography or Budget selection
     if (userChoices[chatId].proceedAfterNights) {
-        if (text === getMessage(chatId, 'Geography', 'Географія')) {
+        if (text === getMessage(chatId, 'Geography🌎', 'Географія')) {
             userChoices[chatId].priority = 'geography';
             if (!userChoices[chatId].region) {
                 const geographyOptions = {
@@ -200,7 +200,7 @@ bot.on('message', async (msg) => {
                 await bot.sendMessage(chatId, getMessage(chatId, 'Please select a region:', 'Будь ласка, оберіть регіон:'), geographyOptions);
                 return;
             }
-        } else if (text === getMessage(chatId, 'Budget', 'Бюджет')) {
+        } else if (text === getMessage(chatId, 'Budget💰', 'Бюджет')) {
             userChoices[chatId].priority = 'budget';
             if (!userChoices[chatId].budget) {
                 const budgetOptions = {
@@ -313,6 +313,9 @@ bot.on('message', async (msg) => {
 
             userChoices[chatId].filteredRecommendations = filteredData;
 
+            // Clear initialRecommendations to prevent looping
+            delete userChoices[chatId].initialRecommendations;
+
             // Ask if the user wants to be even more specific
             await bot.sendMessage(chatId, 'Would you like to be even more specific and choose a loyalty program based on your lifestyle and benefits preferences?', {
                 reply_markup: {
@@ -330,7 +333,7 @@ bot.on('message', async (msg) => {
     }
 
     // Handle lifestyle and benefits preference
-    if (userChoices[chatId].valuePreference && !userChoices[chatId].lifestyleAsked) {
+    if (userChoices[chatId].valuePreference && userChoices[chatId].lifestyleAsked === undefined) {
         if (text === 'Yes') {
             userChoices[chatId].lifestyleAsked = true;
             await bot.sendMessage(chatId, 'Please select your lifestyle preference:', {
@@ -349,6 +352,19 @@ bot.on('message', async (msg) => {
             // Provide final recommendations without lifestyle filtering
             let recommendations = userChoices[chatId].filteredRecommendations.map(row => `${row[1]} (${row[2]})`).join('\n');
             await bot.sendMessage(chatId, `Based on your preferences, we recommend the following loyalty programs:\n${recommendations}`);
+
+            // End of conversation options
+            await bot.sendMessage(chatId, 'Thank you for being with me! Would you like to find a different loyalty program?', {
+                reply_markup: {
+                    keyboard: [
+                        [{ text: 'Start Over' }, { text: 'Thank You, Bye!' }],
+                    ],
+                    one_time_keyboard: true,
+                    resize_keyboard: true,
+                },
+            });
+
+            // **Complete State Reset**
             delete userChoices[chatId];
         } else {
             await bot.sendMessage(chatId, 'Please answer with Yes or No.');
@@ -357,7 +373,7 @@ bot.on('message', async (msg) => {
     }
 
     // Handle user's lifestyle choice
-    if (userChoices[chatId].lifestyleAsked && !userChoices[chatId].lifestyle) {
+    if (userChoices[chatId].lifestyleAsked && userChoices[chatId].lifestyle === undefined) {
         const lifestyleOptions = ['Spontaneous and Active', 'Spontaneous and Chill', 'Planned and Active', 'Planned and Chill'];
         if (lifestyleOptions.includes(text)) {
             userChoices[chatId].lifestyle = text;
@@ -398,18 +414,57 @@ bot.on('message', async (msg) => {
             } else {
                 await bot.sendMessage(chatId, 'No loyalty programs found matching your lifestyle preferences.');
             }
-            delete userChoices[chatId];
+
+            // End of conversation options
+            await bot.sendMessage(chatId, 'Thank you for being with me! Would you like to find a different loyalty program?', {
+                reply_markup: {
+                    keyboard: [
+                        [{ text: 'Start Over' }, { text: 'Thank You, Bye!' }],
+                    ],
+                    one_time_keyboard: true,
+                    resize_keyboard: true,
+                },
+            });
+
+            // **Complete State Reset**
+            delete userChoices[chatId].filteredRecommendations;
+            delete userChoices[chatId].valuePreference;
+            delete userChoices[chatId].lifestyleAsked;
+            delete userChoices[chatId].lifestyle;
+            delete userChoices[chatId].priority;
+            delete userChoices[chatId].budget;
+            delete userChoices[chatId].region;
         } else {
             await bot.sendMessage(chatId, 'Please select one of the given options.');
         }
         return;
     }
 
-    // Handle any other interactions or end the conversation
-    if (text === '/start') {
+    // Handle user's choice to start over or end the conversation
+    if (text === 'Start Over') {
         delete userChoices[chatId];
-        await bot.sendMessage(chatId, 'Conversation reset. Please start again.');
-    } else {
-        await bot.sendMessage(chatId, 'I\'m not sure how to help with that. Please select one of the given options.');
+        userChoices[chatId] = {}; // Re-initialize user choices
+        const name = msg.chat.first_name || 'User';
+        await bot.sendMessage(chatId, `Heeey, dear ${name}, nice to meet you again. Let's start from scratch, do you know what a hotel loyalty program is?`, {
+            reply_markup: {
+                keyboard: [
+                    [{ text: 'Yes👍' }, { text: 'No🤔' }]
+                ],
+                one_time_keyboard: true,
+                resize_keyboard: true,
+            },
+        });
+        return;
+    } else if (text === 'Thank You, Bye!') {
+        await bot.sendMessage(chatId, 'Thank you for your time! Have a wonderful day!', {
+            reply_markup: {
+                remove_keyboard: true,
+            },
+        });
+        delete userChoices[chatId];
+        return;
     }
+
+    // Handle any other interactions or reset the conversation
+    await bot.sendMessage(chatId, 'I\'m not sure how to help with that. Please select one of the given options.');
 });
